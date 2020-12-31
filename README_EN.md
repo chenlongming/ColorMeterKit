@@ -1,10 +1,10 @@
 # ColorMeterKit: ColorMeter SDK For Swift
 
-[English](README_EN.md)
+[中文](README.md)
 
-封装了 ColorMeter 设备的蓝牙命令, 如: 测量, 校准, 读取仪器信息, 设置仪器的显示参数和容差参数等. 同时也提供了简单色彩模式转换的功能, 提供 `RGB`, `Lab`, `XYZ` 模式相互转换的方法
+Encapsulates the Bluetooth commands of the ColorMeter device, such as: measurement, calibration, reading instrument information, setting the display parameters and tolerance parameters of the instrument, etc. It also provides the function of simple color mode conversion, providing `RGB`, `Lab`, How to convert between `XYZ` modes
 
-由于蓝牙通信是较为复杂的异步操作, 相关的蓝牙命令都使用 [RxSwift](https://github.com/ReactiveX/RxSwift) 库封装成了可观察对象, 便于操作
+Since Bluetooth communication is a relatively complex asynchronous operation, the related Bluetooth commands are all encapsulated into observable objects using the [RxSwift](https://github.com/ReactiveX/RxSwift) library, which is easy to operate
 
 ## Requirements
 
@@ -16,7 +16,7 @@
 
 ## Installation
 
-目前只支持 Swift Package Manager 的安装方式
+Currently only supports the installation method of Swift Package Manager
 
 
 
@@ -33,21 +33,21 @@ class ViewController: UIViewController {
 	var scanDisposable: Disposable?
 	var peripherals: [CBPeripheral] = []
 	
-	// 扫描设备并将发现的设备添加到 peripherals 数组中
+	// Scan for devices and add discovered devices to the peripherals array
 	func scan() {
 		if !cm.isScanning {
 			peripherals = []
 			cm.startScan()
 			scanDisposable = cm.observeScanned().subscribe(onNext: { [weak self] state in
       	if let strongSelf = self, let peripheral = state.peripheral {
-      		// 发现设备
+      		// scanned peripheral
       		strongSelf.peripherals.append(peripheral)
       	}
       })
 		}
 	}
 	
-	// 停止扫描
+	// Stop scanning
 	func stopScan() {
 		if cm.isScanning {
 			scanDisposable?.dispose()
@@ -55,24 +55,24 @@ class ViewController: UIViewController {
 		}
 	}
 	
-	// 连接指定设备
+	// Connect to peripheral
 	func connect(index: Int) {
 		_ = cm.connect(peripherals[index]).subscribe(onNext: { state in
-    	// todo 连接成功
+    	// todo success
     })
 	}
 	
 	func measure() {
 		_ = cm.measureWithResponse().subscribe { data in
 			if let data = data {
-				// todo 测量成功
+				// todo success
 			}
 		} onError: { error in
-			// todo 测量失败
+			// todo failure
 		}
 	}
 }
 ```
 
-查看 Demo: [ColorMeterKitDemo](https://github.com/chenlongming/ColorMeterKitDemo)
+Demo: [ColorMeterKitDemo](https://github.com/chenlongming/ColorMeterKitDemo)
 
