@@ -18,10 +18,6 @@
 
 目前只支持 Swift Package Manager 的安装方式
 
-```swift
-
-```
-
 
 
 ## usage
