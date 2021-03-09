@@ -15,7 +15,7 @@ public class CMKit: NSObject {
     /// observe bluetooth state update
     public var stateObservable: Observable<CMState> { connector.statePublish.asObservable() }
     
-    var waiting = false
+    public var waitingMeasure = false
     
     var connector: Connector!
     
@@ -111,12 +111,12 @@ public class CMKit: NSObject {
     ///  ```
     ///  // Please remember to destroy the subscription
     ///  cm.observeMeasure()
-    ///     .map { _ in
+    ///     .concatMap { _ in
     ///         return cm.getMeasureData()
     ///     }
     ///     .subscribe(
     ///         onNext: { data in
-    ///             // todo 
+    ///             // todo
     ///         }
     ///     )
     ///
@@ -125,7 +125,7 @@ public class CMKit: NSObject {
     public func observeMeasure() -> Observable<CMState> {
         return stateObservable
             .filter { [weak self] state in
-                if !(self?.waiting ?? false) && state.state == .notification, let data = state.data {
+                if !(self?.waitingMeasure ?? false) && state.state == .notification, let data = state.data {
                     return data.elementsEqual([0xbb, 0x01, 0x00, 0x00, 0x01, 0x90, 0x0a, 0x1f, 0xff, 0x75])
                 }
                 return false;
@@ -139,16 +139,12 @@ public class CMKit: NSObject {
         return Observable<Data?>.create { [weak self] observer in
             var disposable: Disposable? = nil
             if let strongSelf = self {
-                if strongSelf.waiting {
-                    observer.onError(CMError.executingCommand)
-                } else if !strongSelf.connector.isConnected {
+                if !strongSelf.connector.isConnected {
                     observer.onError(CMError.peripheralDisconnect)
                 } else {
-                    strongSelf.waiting = true
                     strongSelf.connector.writeData(data: command.data)
                     
                     if command.responseBytesCount == 0 {
-                        strongSelf.waiting = false
                         observer.onNext(nil)
                         observer.onCompleted()
                     } else {
@@ -165,8 +161,6 @@ public class CMKit: NSObject {
                                 }
                             } onError: { (err) in
                                 observer.onError(err)
-                            } onCompleted: {
-                                strongSelf.waiting = false
                             }
                     }
                 }
@@ -190,6 +184,7 @@ public class CMKit: NSObject {
     
     /// measure
     public func measure(_ mode: MeasureData.MeasureMode = .SCI) -> Observable<Void> {
+        self.waitingMeasure = true
         return wakeup()
             .concatMap { [weak self] _ -> Observable<Data?> in
                 if let strongSelf = self {
@@ -197,7 +192,9 @@ public class CMKit: NSObject {
                 }
                 return .of(nil)
             }
-            .map { _ in () }
+            .map { [weak self] _ in
+                self?.waitingMeasure = false
+            }
     }
     
     /// get measurement data
