@@ -18,6 +18,7 @@ public enum CMError: Error {
     case responseTimeout
     case storageIndexOutOfRange
     case getStorageFailure
+    case executingCommand
     
     
     // MARK: - color formatter errors

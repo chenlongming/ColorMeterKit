@@ -153,7 +153,7 @@ public class MeasureData: CustomStringConvertible {
                     var n = mode == .SCI ? 46 : 132
                     let end = Int(waveCount) * 2 + (mode == .SCI ? 46 : 132)
                     while n < end {
-                        refs.append(Float32(data.subdata(in: n ..< (n + 4)).uint16) / 100)
+                        refs.append(Float32(data.subdata(in: n ..< (n + 2)).uint16) / 100)
                         n += 2
                     }
                 } else {
