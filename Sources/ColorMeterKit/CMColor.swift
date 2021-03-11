@@ -152,6 +152,11 @@ public class CMColor {
         green = green > 0.0031308 ? 1.055 * pow(green, 1 / 2.4) - 0.055 : 12.92 * green
         blue = blue > 0.0031308 ? 1.055 * pow(blue, 1 / 2.4) - 0.055 : 12.92 * blue
         
-        return (UInt8(min(red * 255, 255)), UInt8(min(green * 255, 255)), UInt8(min(blue * 255, 255)))
+        let R = max(min(255, red * 255), 0)
+        let G = max(min(255, green * 255), 0)
+        let B = max(min(255, blue * 255), 0)
+        
+        
+        return (UInt8(R), UInt8(G), UInt8(B))
     }
 }
