@@ -65,7 +65,7 @@ public class Command {
     }
     
     public static func getMeasureData(_ mode: MeasureData.MeasureMode = .SCI) -> Command {
-        return Command(bytes: [0xbb, 0x02, mode.rawValue + 0x10, 0x00, 0x00, 0x00, 0x00, 0x00, 0xff, 0x00], responseBytesCount: 200)
+        return Command(bytes: [0xbb, 0x02, mode.rawValue + 0x10, 0x00, 0x00, 0x00, 0x00, 0x00, 0xff, 0x00], responseBytesCount: 200, timeout: 3)
     }
     
     public static var blackCalibrate = Command(bytes: [0xbb, 0x10, 0, 0, 0, 0, 0, 0, 0xff, 0], responseBytesCount: 10, timeout: 3)

@@ -143,25 +143,27 @@ public class CMKit: NSObject {
                     observer.onError(CMError.peripheralDisconnect)
                 } else {
                     strongSelf.connector.writeData(data: command.data)
-                    
                     if command.responseBytesCount == 0 {
                         observer.onNext(nil)
                         observer.onCompleted()
                     } else {
                         disposable = strongSelf.observeNotificationBytes()
                             .buffer(timeSpan: .seconds(command.timeout), count: command.responseBytesCount, scheduler: ConcurrentDispatchQueueScheduler(queue: .global()))
-                            .subscribe { data in
-                                if data.count < command.responseBytesCount {
-                                    observer.onError(CMError.responseTimeout)
-                                } else if data.count != command.responseBytesCount || !Command.validate(data: data) {
-                                    observer.onError(CMError.invalidResponseData)
-                                } else {
-                                    observer.onNext(data.data)
-                                    observer.onCompleted()
+                            .subscribe(
+                                onNext: { data in
+                                    if data.count < command.responseBytesCount {
+                                        observer.onError(CMError.responseTimeout)
+                                    } else if data.count != command.responseBytesCount || !Command.validate(data: data) {
+                                        observer.onError(CMError.invalidResponseData)
+                                    } else {
+                                        observer.onNext(data.data)
+                                        observer.onCompleted()
+                                    }
+                                },
+                                onError: { (err) in
+                                    observer.onError(err)
                                 }
-                            } onError: { (err) in
-                                observer.onError(err)
-                            }
+                            )
                     }
                 }
             }
@@ -174,10 +176,9 @@ public class CMKit: NSObject {
     
     /// send wakeup peripheral
     public func wakeup () -> Observable<Void> {
-        return execCommand(command: .wakeUp).concatMap { data -> Observable<Int> in
-            return Observable.timer(.microseconds(50), scheduler: ConcurrentDispatchQueueScheduler(queue: .global()))
-        }
-        .map { _ in () }
+        return execCommand(command: .wakeUp)
+            .delay(.milliseconds(50), scheduler: MainScheduler.instance)
+            .map { _ in () }
     }
     
     // MARK: - Measure
