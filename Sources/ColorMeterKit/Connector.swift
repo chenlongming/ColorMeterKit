@@ -11,8 +11,6 @@ import RxSwift
 
 
 class Connector: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate {
-    /// 发现设备的服务 uuid
-    public static let scanService = "FFF0"
     /// 服务 uuid
     public static let service = "FFE0"
     /// 特征 uuid
@@ -34,7 +32,7 @@ class Connector: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate {
     }
     
     func startScan(options: [String: Any]? = nil) {
-        manager.scanForPeripherals(withServices: [CBUUID(string: Self.scanService)], options: options)
+        manager.scanForPeripherals(withServices: nil, options: options)
         statePublish.onNext(.init(state: .startScan))
     }
     
@@ -76,6 +74,7 @@ class Connector: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate {
     }
     
     func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData: [String : Any], rssi RSSI: NSNumber) {
+        print("found:", peripheral.name)
         statePublish.onNext(.init(state: .scanned, peripheral: peripheral))
     }
     
