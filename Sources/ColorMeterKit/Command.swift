@@ -92,8 +92,6 @@ public class Command {
         return Command(bytes: data.data, responseBytesCount: 10)
     }
     
-    public static var getPeripheralDetail = Command(bytes: [0xbb, 0x12, 0x01, 0, 0, 0, 0, 0, 0xff, 0], responseBytesCount: 200, timeout: 3)
-    
     public static var getCalibrationState = Command(bytes: [0xbb, 0x1e, 0, 0, 0, 0, 0, 0, 0xff, 0], responseBytesCount: 20)
     
     public static func setDisplayParameter(_ parameter: DisplayParameter) -> Command {
