@@ -340,29 +340,6 @@ public class CMKit: NSObject {
     }
     
     
-    // MARK: - Peripheral Information
-    
-    /// get connected peripheral
-    /// seealso: `PeripheralDetail`
-    ///
-    /// - returns: `Observable<PeripheralDetal?>`
-    public func getPeripheralDetail() -> Observable<PeripheralDetail?> {
-        return wakeup()
-            .concatMap { [weak self] _ -> Observable<Data?> in
-                if let strongSelf = self {
-                    return strongSelf.execCommand(command: .getPeripheralDetail)
-                }
-                return .of(nil)
-            }
-            .map { data in
-                if let data = data {
-                    return PeripheralDetail(data: data)
-                }
-                return nil
-            }
-    }
-    
-    
     /// get connected peripheral last calibration date,
     /// determine whether to recalibrate
     public func getCalibrationState() -> Observable<CalibrationState?> {
