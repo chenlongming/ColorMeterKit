@@ -68,9 +68,9 @@ public class Command {
         return Command(bytes: [0xbb, 0x02, mode.rawValue + 0x10, 0x00, 0x00, 0x00, 0x00, 0x00, 0xff, 0x00], responseBytesCount: 200, timeout: 3)
     }
     
-    public static var blackCalibrate = Command(bytes: [0xbb, 0x10, 0, 0, 0, 0, 0, 0, 0xff, 0], responseBytesCount: 10, timeout: 3)
+    public static var blackCalibrate = Command(bytes: [0xbb, 0x10, 1, 0, 0, 0, 0, 0, 0xff, 0], responseBytesCount: 10, timeout: 3)
     
-    public static var whiteCalibrate = Command(bytes: [0xbb, 0x11, 0, 0, 0, 0, 0, 0, 0xff, 0], responseBytesCount: 10, timeout: 3)
+    public static var whiteCalibrate = Command(bytes: [0xbb, 0x11, 1, 0, 0, 0, 0, 0, 0xff, 0], responseBytesCount: 10, timeout: 3)
     
     public static var getStorageCount = Command(bytes: [0xbb, 0x16, 0, 0, 0, 0, 0, 0, 0xff, 0], responseBytesCount: 10)
     

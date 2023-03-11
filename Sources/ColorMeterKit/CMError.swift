@@ -19,6 +19,7 @@ public enum CMError: Error {
     case storageIndexOutOfRange
     case getStorageFailure
     case executingCommand
+    case calibrateFailure
     
     
     // MARK: - color formatter errors
