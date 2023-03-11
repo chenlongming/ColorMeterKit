@@ -251,6 +251,16 @@ public class CMKit: NSObject {
                 }
                 return .of(nil)
             }
+            .concatMap { (data: Data?) -> Observable<Bool> in
+                if data != nil {
+                    if let res = data?[2] {
+                        if res == 0 {
+                            return .of(true)
+                        }
+                    }
+                }
+                return .error(CMError.calibrateFailure);
+            }
             .map { _ in () }
     }
     
@@ -262,6 +272,16 @@ public class CMKit: NSObject {
                     return strongSelf.execCommand(command: .whiteCalibrate)
                 }
                 return .of(nil)
+            }
+            .concatMap { (data: Data?) -> Observable<Bool> in
+                if data != nil {
+                    if let res = data?[2] {
+                        if res == 0 {
+                            return .of(true)
+                        }
+                    }
+                }
+                return .error(CMError.calibrateFailure);
             }
             .map { _ in () }
     }
