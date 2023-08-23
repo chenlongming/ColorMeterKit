@@ -35,6 +35,10 @@ public enum ColorMode: UInt8 {
     case trapping
     case contrast
     case hueDifferenceAndGrayness
+    case ITA
+    case HSB
+    case HLS
+    case LRV
     
     
     public enum Whiteness: UInt8 {
